@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mother's Day Sales Dashboard — Sleep & Wellness</title>
+<style>
+:root {
+  --navy:    #1a2a3a;
+  --navy-dk: #111e2b;
+  --navy-md: #243447;
+  --gold:    #c9a84c;
+  --gold-lt: #e8d08a;
+  --teal:    #4a9b8e;
+  --teal-dk: #357a6f;
+  --pink:    #c2185b;
+  --pink-lt: #fce4ec;
+  --white:   #ffffff;
+  --off:     #f8f7f5;
+  --border:  #e0dbd5;
+  --gray:    #6b7280;
+  --green:   #2e7d32;
+  --green-lt:#e8f5e9;
+  --amber:   #f59e0b;
+  --red:     #dc2626;
+  --text:    #1f2937;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#0f1923;color:var(--text);min-height:100vh;}
+
+/* ── HEADER ── */
+.header{background:var(--navy-dk);border-bottom:1px solid rgba(201,168,76,.2);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;}
+.header-left{display:flex;align-items:center;gap:16px;}
+.logo{height:34px;filter:brightness(0) invert(1);opacity:.9;}
+.logo-div{width:1px;height:28px;background:rgba(255,255,255,.15);}
+.header-title{color:var(--white);font-size:15px;font-weight:700;}
+.header-title span{color:var(--gold);font-size:12px;font-weight:400;display:block;margin-top:1px;}
+.header-right{display:flex;align-items:center;gap:12px;}
+.live-badge{display:flex;align-items:center;gap:6px;background:rgba(74,155,142,.15);border:1px solid rgba(74,155,142,.3);border-radius:20px;padding:5px 12px;font-size:12px;color:var(--teal);font-weight:600;}
+.live-dot{width:8px;height:8px;border-radius:50%;background:#4ade80;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(1.4);}}
+.refresh-btn{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.7);font-size:12px;padding:6px 14px;border-radius:20px;cursor:pointer;font-family:inherit;transition:all .2s;}
+.refresh-btn:hover{background:rgba(255,255,255,.1);color:var(--white);}
+.last-update{font-size:11px;color:rgba(255,255,255,.35);}
+
+/* ── MAIN ── */
+.main{padding:20px 20px 40px;max-width:1280px;margin:0 auto;}
+
+/* ── COUNTDOWN STRIP ── */
+.countdown-strip{background:linear-gradient(135deg,#1a0a12,#2d1020,#1a2a3a);border:1px solid rgba(201,168,76,.2);border-radius:12px;padding:16px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+.cd-label{font-size:12px;color:var(--gold);font-weight:700;text-transform:uppercase;letter-spacing:.1em;}
+.cd-blocks{display:flex;gap:8px;align-items:center;}
+.cd-block{background:rgba(255,255,255,.06);border:1px solid rgba(201,168,76,.2);border-radius:8px;padding:8px 14px;text-align:center;min-width:60px;}
+.cd-num{font-size:24px;font-weight:700;color:var(--gold);line-height:1;display:block;}
+.cd-sub{font-size:9px;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.4);margin-top:3px;display:block;}
+.cd-colon{font-size:22px;color:rgba(201,168,76,.4);padding-bottom:6px;}
+.team-bonus-strip{display:flex;align-items:center;gap:12px;}
+.team-bonus-label{font-size:12px;color:rgba(255,255,255,.6);text-align:right;}
+.team-bonus-amt{font-size:28px;font-weight:700;color:var(--gold);}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:20px;}
+.kpi-card{background:var(--navy-md);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:18px 20px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi-gold::before{background:linear-gradient(90deg,var(--gold),var(--gold-lt));}
+.kpi-teal::before{background:linear-gradient(90deg,var(--teal),#7dd3ca);}
+.kpi-pink::before{background:linear-gradient(90deg,var(--pink),#f06292);}
+.kpi-green::before{background:linear-gradient(90deg,var(--green),#66bb6a);}
+.kpi-amber::before{background:linear-gradient(90deg,var(--amber),#fcd34d);}
+.kpi-label{font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.45);margin-bottom:8px;}
+.kpi-val{font-size:32px;font-weight:700;color:var(--white);line-height:1;margin-bottom:4px;}
+.kpi-sub{font-size:11.5px;color:rgba(255,255,255,.4);}
+
+/* ── TEAM PROGRESS ── */
+.team-progress-card{background:var(--navy-md);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;margin-bottom:20px;}
+.card-title{font-size:13px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;}
+.card-title-badge{font-size:11px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);color:var(--gold);padding:3px 10px;border-radius:20px;}
+.progress-track{background:rgba(255,255,255,.06);border-radius:20px;height:12px;overflow:hidden;margin-bottom:8px;}
+.progress-fill{height:12px;border-radius:20px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .8s ease;position:relative;}
+.progress-fill::after{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);animation:shimmer 2s infinite;}
+@keyframes shimmer{0%{transform:translateX(-100%);}100%{transform:translateX(100%);}}
+.progress-meta{display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,.4);}
+
+/* ── TWO COL ── */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px;}
+
+/* ── LEADERBOARD ── */
+.leaderboard-card{background:var(--navy-md);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;}
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.lb-row:last-child{border-bottom:none;}
+.lb-rank{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.rank-1{background:linear-gradient(135deg,#c9a84c,#e8d08a);color:var(--navy-dk);}
+.rank-2{background:rgba(192,192,192,.2);color:#c0c0c0;border:1px solid #c0c0c0;}
+.rank-3{background:rgba(176,141,87,.2);color:#b08d57;border:1px solid #b08d57;}
+.rank-other{background:rgba(255,255,255,.06);color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.1);}
+.lb-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:var(--white);flex-shrink:0;}
+.lb-info{flex:1;}
+.lb-name{font-size:14px;font-weight:700;color:var(--white);}
+.lb-detail{font-size:11.5px;color:rgba(255,255,255,.4);margin-top:2px;}
+.lb-right{text-align:right;}
+.lb-sales{font-size:18px;font-weight:700;color:var(--white);}
+.lb-bonus{font-size:12px;color:var(--gold);font-weight:600;margin-top:1px;}
+.lb-tier{font-size:10px;padding:2px 8px;border-radius:20px;margin-top:3px;display:inline-block;}
+.tier-1-badge{background:#E3F2FD;color:#1565C0;}
+.tier-2-badge{background:#FFF8E1;color:#E65100;}
+.tier-3-badge{background:var(--green-lt);color:var(--green);}
+.lb-bar-wrap{width:100%;background:rgba(255,255,255,.06);border-radius:20px;height:4px;margin-top:8px;}
+.lb-bar{height:4px;border-radius:20px;background:var(--gold);transition:width .6s;}
+
+/* ── PACKAGE BREAKDOWN ── */
+.pkg-breakdown-card{background:var(--navy-md);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;}
+.pkg-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.pkg-row:last-child{border-bottom:none;}
+.pkg-name{font-size:13px;color:rgba(255,255,255,.8);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pkg-count{font-size:13px;font-weight:700;color:var(--white);width:28px;text-align:right;flex-shrink:0;}
+.pkg-bar-wrap{width:100px;background:rgba(255,255,255,.06);border-radius:20px;height:6px;flex-shrink:0;}
+.pkg-bar{height:6px;border-radius:20px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .6s;}
+.pkg-revenue{font-size:12px;color:var(--gold);width:52px;text-align:right;flex-shrink:0;}
+
+/* ── RECENT SALES ── */
+.recent-card{background:var(--navy-md);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;}
+.sale-row{display:flex;align-items:flex-start;gap:12px;padding:11px 0;border-bottom:1px solid rgba(255,255,255,.04);}
+.sale-row:last-child{border-bottom:none;}
+.sale-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--white);flex-shrink:0;}
+.sale-info{flex:1;}
+.sale-name{font-size:13px;font-weight:700;color:var(--white);}
+.sale-pkg{font-size:12px;color:rgba(255,255,255,.5);margin-top:1px;}
+.sale-right{text-align:right;flex-shrink:0;}
+.sale-amt{font-size:15px;font-weight:700;color:var(--gold);}
+.sale-date{font-size:11px;color:rgba(255,255,255,.35);margin-top:2px;}
+.sale-new-badge{font-size:10px;background:rgba(74,155,142,.15);border:1px solid rgba(74,155,142,.3);color:var(--teal);padding:2px 7px;border-radius:20px;margin-top:3px;display:inline-block;}
+
+/* ── SPLIT STATS ── */
+.split-card{background:var(--navy-md);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:20px 24px;}
+.split-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.split-label{font-size:12.5px;color:rgba(255,255,255,.6);}
+.split-val{font-size:14px;font-weight:700;color:var(--white);}
+.split-bar-wrap{background:rgba(255,255,255,.06);border-radius:20px;height:8px;overflow:hidden;margin-bottom:6px;}
+.split-bar-new{height:8px;float:left;background:var(--teal);border-radius:20px 0 0 20px;transition:width .6s;}
+.split-bar-existing{height:8px;float:left;background:var(--gold);border-radius:0 20px 20px 0;transition:width .6s;}
+.split-legend{display:flex;gap:16px;}
+.split-legend-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:rgba(255,255,255,.5);}
+.split-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+
+/* ── LOADING / ERROR ── */
+.loading-state{text-align:center;padding:60px 24px;color:rgba(255,255,255,.4);}
+.loading-spinner{width:40px;height:40px;border:3px solid rgba(255,255,255,.1);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 16px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.error-state{background:rgba(220,38,38,.08);border:1px solid rgba(220,38,38,.2);border-radius:12px;padding:20px 24px;text-align:center;color:rgba(255,255,255,.6);font-size:13.5px;}
+
+/* ── EMPTY STATE ── */
+.empty{text-align:center;padding:32px;color:rgba(255,255,255,.3);font-size:13px;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){.two-col,.three-col{grid-template-columns:1fr;}}
+@media(max-width:600px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr);}
+  .countdown-strip{flex-direction:column;align-items:flex-start;}
+  .header{flex-direction:column;align-items:flex-start;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-left">
+    <img class="logo" src="https://sleep-wellness.org/wp-content/uploads/2023/12/sleep-and-wellness-logo-new.png" alt="Sleep & Wellness">
+    <div class="logo-div"></div>
+    <div class="header-title">
+      Mother's Day Sales Dashboard
+      <span>Internal · Live data from Google Sheets</span>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="live-badge"><span class="live-dot"></span>Live</div>
+    <button class="refresh-btn" onclick="loadData()">↻ Refresh</button>
+    <span class="last-update" id="last-update">Loading...</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- COUNTDOWN -->
+  <div class="countdown-strip">
+    <div>
+      <div class="cd-label">⏱ Team bonus deadline</div>
+      <div class="cd-blocks">
+        <div class="cd-block"><span class="cd-num" id="cd-d">--</span><span class="cd-sub">Days</span></div>
+        <span class="cd-colon">:</span>
+        <div class="cd-block"><span class="cd-num" id="cd-h">--</span><span class="cd-sub">Hours</span></div>
+        <span class="cd-colon">:</span>
+        <div class="cd-block"><span class="cd-num" id="cd-m">--</span><span class="cd-sub">Mins</span></div>
+        <span class="cd-colon">:</span>
+        <div class="cd-block"><span class="cd-num" id="cd-s">--</span><span class="cd-sub">Secs</span></div>
+      </div>
+    </div>
+    <div class="team-bonus-strip">
+      <div class="team-bonus-label">Team bonus if 50<br>bookings by May 12</div>
+      <div class="team-bonus-amt">$100<span style="font-size:14px;color:rgba(255,255,255,.4);"> each</span></div>
+    </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card kpi-gold">
+      <div class="kpi-label">Total Sales</div>
+      <div class="kpi-val" id="kpi-total">—</div>
+      <div class="kpi-sub">Mother's Day bookings</div>
+    </div>
+    <div class="kpi-card kpi-teal">
+      <div class="kpi-label">Revenue Logged</div>
+      <div class="kpi-val" id="kpi-revenue">—</div>
+      <div class="kpi-sub">Total amount collected</div>
+    </div>
+    <div class="kpi-card kpi-pink">
+      <div class="kpi-label">Gift Certificates</div>
+      <div class="kpi-val" id="kpi-gifts">—</div>
+      <div class="kpi-sub">Gift cert sales</div>
+    </div>
+    <div class="kpi-card kpi-green">
+      <div class="kpi-label">New Patients</div>
+      <div class="kpi-val" id="kpi-new">—</div>
+      <div class="kpi-sub">First-time visitors</div>
+    </div>
+    <div class="kpi-card kpi-amber">
+      <div class="kpi-label">Referrals</div>
+      <div class="kpi-val" id="kpi-referrals">—</div>
+      <div class="kpi-sub">Bring Your Mom</div>
+    </div>
+    <div class="kpi-card kpi-teal">
+      <div class="kpi-label">Avg Sale</div>
+      <div class="kpi-val" id="kpi-avg">—</div>
+      <div class="kpi-sub">Per booking</div>
+    </div>
+  </div>
+
+  <!-- TEAM PROGRESS -->
+  <div class="team-progress-card">
+    <div class="card-title">
+      Team Progress toward 50-Booking Bonus
+      <span class="card-title-badge" id="team-pct">0 / 50</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="team-bar" style="width:0%"></div></div>
+    <div class="progress-meta">
+      <span id="team-remaining">50 bookings needed</span>
+      <span>$100 flat bonus for everyone when we hit 50 before May 12</span>
+    </div>
+  </div>
+
+  <!-- LEADERBOARD + PACKAGE BREAKDOWN -->
+  <div class="two-col">
+
+    <div class="leaderboard-card">
+      <div class="card-title">Staff Leaderboard <span class="card-title-badge">Bonus tracker</span></div>
+      <div id="leaderboard-body">
+        <div class="loading-state"><div class="loading-spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <div class="pkg-breakdown-card">
+      <div class="card-title">Package Breakdown <span class="card-title-badge">By sales count</span></div>
+      <div id="pkg-body">
+        <div class="loading-state"><div class="loading-spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RECENT + SPLITS -->
+  <div class="two-col">
+
+    <div class="recent-card">
+      <div class="card-title">Recent Sales <span class="card-title-badge">Last 8 entries</span></div>
+      <div id="recent-body">
+        <div class="loading-state"><div class="loading-spinner"></div>Loading...</div>
+      </div>
+    </div>
+
+    <div>
+      <div class="split-card" style="margin-bottom:16px;">
+        <div class="card-title">New vs Existing Patients</div>
+        <div class="split-bar-wrap" id="patient-bar-wrap">
+          <div class="split-bar-new" id="bar-new" style="width:50%"></div>
+          <div class="split-bar-existing" id="bar-existing" style="width:50%"></div>
+        </div>
+        <div style="clear:both;margin-bottom:8px;"></div>
+        <div class="split-legend">
+          <div class="split-legend-item"><div class="split-legend-dot" style="background:var(--teal)"></div><span id="leg-new">New (0)</span></div>
+          <div class="split-legend-item"><div class="split-legend-dot" style="background:var(--gold)"></div><span id="leg-existing">Existing (0)</span></div>
+        </div>
+      </div>
+
+      <div class="split-card" style="margin-bottom:16px;">
+        <div class="card-title">Payment Methods</div>
+        <div id="payment-body"><div class="empty">Loading...</div></div>
+      </div>
+
+      <div class="split-card">
+        <div class="card-title">Bonus Summary</div>
+        <div id="bonus-summary-body"><div class="empty">Loading...</div></div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────────────────
+// Published CSV URL — works with public Google Sheet
+// If data doesn't load, ask Ihsan to go to:
+// File → Share → Publish to web → Sheet1 → CSV → Publish → copy URL
+const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQA3i-q3ZtELuSioGx8Q6fr7eBwbnb3I1u1JUiMvpXbiEvC7HgtSOkZ3CS09VuJQoJiACVCCc5ygB3k/pub?output=csv';
+
+// Column mapping — adjust if Google Form created different column names
+// These match the form fields we built:
+const COL = {
+  timestamp:   0,  // Column A — auto-added by Google Forms
+  staff:       1,  // Column B — Staff Member Name
+  date:        2,  // Column C — Date of Sale
+  patientType: 3,  // Column D — Patient Type
+  package:     4,  // Column E — Package Sold
+  amount:      5,  // Column F — Sale Amount
+  payment:     6,  // Column G — Payment Method
+  referral:    7,  // Column H — Referral
+  notes:       8,  // Column I — Notes
+};
+
+// Staff colors for avatars
+const COLORS = {
+  'Atiqa':       '#c2185b',
+  'Florence':    '#4a9b8e',
+  'Ava':         '#d81b60',
+  'Martina':     '#388e3c',
+  'Ihsan':       '#00838f',
+  'Nazmul':      '#e64a19',
+  'Abdul Hameed':'#7b1fa2',
+  'Other':       '#6b7280',
+};
+
+function initials(name) {
+  return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+}
+function color(name) {
+  return COLORS[name] || '#6b7280';
+}
+function calcBonus(count) {
+  if(count>=10) return {rate:20, tier:'Tier 3 — $20/booking'};
+  if(count>=5)  return {rate:15, tier:'Tier 2 — $15/booking'};
+  return {rate:10, tier:'Tier 1 — $10/booking'};
+}
+function totalBonus(count) {
+  if(count>=10) return count*20;
+  if(count>=5)  return count*15;
+  return count*10;
+}
+function fmt(n) { return '$'+Math.round(n).toLocaleString(); }
+function pad(n) { return n<10?'0'+n:''+n; }
+
+// ── CSV PARSER ────────────────────────────────────────────────────────────
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h=>h.replace(/"/g,'').trim());
+  const rows = [];
+  for(let i=1;i<lines.length;i++){
+    if(!lines[i].trim()) continue;
+    // Handle quoted commas
+    const cols = [];
+    let cur='', inQ=false;
+    for(let c of lines[i]){
+      if(c==='"'){inQ=!inQ;}
+      else if(c===','&&!inQ){cols.push(cur.trim());cur='';}
+      else{cur+=c;}
+    }
+    cols.push(cur.trim());
+    if(cols.length > 1) rows.push(cols);
+  }
+  return {headers, rows};
+}
+
+// ── MAIN DATA LOADER ──────────────────────────────────────────────────────
+async function loadData() {
+  document.getElementById('last-update').textContent = 'Refreshing...';
+  try {
+    const res = await fetch(CSV_URL + '&t=' + Date.now());
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const text = await res.text();
+    const {headers, rows} = parseCSV(text);
+
+    // If sheet is empty or only has headers
+    if(rows.length === 0) {
+      renderEmpty();
+      return;
+    }
+
+    processData(rows);
+    document.getElementById('last-update').textContent =
+      'Updated ' + new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  } catch(e) {
+    console.error(e);
+    // Show demo data so dashboard looks correct even if sheet isn't published yet
+    renderSetupGuide();
+    document.getElementById('last-update').textContent = 'Sheet not yet published — see setup note';
+  }
+}
+
+function renderEmpty() {
+  const empties = ['leaderboard-body','pkg-body','recent-body','payment-body','bonus-summary-body'];
+  empties.forEach(id => document.getElementById(id).innerHTML = '<div class="empty">No sales recorded yet — submit the first one!</div>');
+  ['kpi-total','kpi-revenue','kpi-gifts','kpi-new','kpi-referrals','kpi-avg'].forEach(id=>{
+    document.getElementById(id).textContent='0';
+  });
+  document.getElementById('last-update').textContent = 'Live — no data yet';
+}
+
+function renderSetupGuide() {
+  const guide = `<div class="error-state">
+    <strong style="color:var(--gold);display:block;margin-bottom:8px;">📋 One setup step needed</strong>
+    Ask Ihsan to publish the Google Sheet as CSV:<br><br>
+    <strong style="color:rgba(255,255,255,.8);">File → Share → Publish to web → CSV → Publish</strong><br><br>
+    Once published, the dashboard will load live data automatically every 30 seconds.
+  </div>`;
+  document.getElementById('leaderboard-body').innerHTML = guide;
+  ['kpi-total','kpi-revenue','kpi-gifts','kpi-new','kpi-referrals','kpi-avg'].forEach(id=>{
+    document.getElementById(id).textContent='—';
+  });
+}
+
+// ── PROCESS & RENDER ──────────────────────────────────────────────────────
+function processData(rows) {
+  let totalRevenue=0, giftCount=0, newCount=0, existingCount=0, referralCount=0;
+  const staffMap={};
+  const pkgMap={};
+  const paymentMap={};
+
+  rows.forEach(row => {
+    const staff   = (row[COL.staff]||'').replace(/"/g,'').trim();
+    const pkg     = (row[COL.package]||'').replace(/"/g,'').trim();
+    const amount  = parseFloat((row[COL.amount]||'0').replace(/[^0-9.]/g,''))||0;
+    const patient = (row[COL.patientType]||'').replace(/"/g,'').trim();
+    const payment = (row[COL.payment]||'').replace(/"/g,'').trim();
+    const referral= (row[COL.referral]||'').replace(/"/g,'').trim();
+    const date    = (row[COL.date]||row[COL.timestamp]||'').replace(/"/g,'').trim();
+
+    totalRevenue += amount;
+    if(pkg.toLowerCase().includes('gift')) giftCount++;
+    if(patient.toLowerCase().includes('new')) newCount++;
+    else if(patient) existingCount++;
+    if(referral.toLowerCase().includes('yes')) referralCount++;
+
+    // Staff
+    if(staff) {
+      if(!staffMap[staff]) staffMap[staff]={count:0,revenue:0,entries:[]};
+      staffMap[staff].count++;
+      staffMap[staff].revenue+=amount;
+      staffMap[staff].entries.push({pkg,amount,date,patient});
+    }
+
+    // Package
+    if(pkg) {
+      // Shorten for display
+      const shortPkg = pkg.split('—')[0].trim().split(' ').slice(0,3).join(' ');
+      if(!pkgMap[shortPkg]) pkgMap[shortPkg]={count:0,revenue:0};
+      pkgMap[shortPkg].count++;
+      pkgMap[shortPkg].revenue+=amount;
+    }
+
+    // Payment
+    if(payment) {
+      pkgMap; // no-op keep var alive
+      if(!paymentMap[payment]) paymentMap[payment]=0;
+      paymentMap[payment]++;
+    }
+  });
+
+  const total = rows.length;
+  const avg = total>0 ? totalRevenue/total : 0;
+
+  // KPIs
+  document.getElementById('kpi-total').textContent    = total;
+  document.getElementById('kpi-revenue').textContent  = fmt(totalRevenue);
+  document.getElementById('kpi-gifts').textContent    = giftCount;
+  document.getElementById('kpi-new').textContent      = newCount;
+  document.getElementById('kpi-referrals').textContent= referralCount;
+  document.getElementById('kpi-avg').textContent      = fmt(avg);
+
+  // Team progress
+  const pct = Math.min(100, Math.round((total/50)*100));
+  document.getElementById('team-bar').style.width = pct+'%';
+  document.getElementById('team-pct').textContent = total+' / 50';
+  const rem = Math.max(0, 50-total);
+  document.getElementById('team-remaining').textContent =
+    rem>0 ? rem+' more bookings needed for $100 team bonus' : '🎉 Team bonus unlocked!';
+
+  // New vs existing split
+  const patTotal = newCount+existingCount||1;
+  const newPct = Math.round((newCount/patTotal)*100);
+  const exPct  = 100-newPct;
+  document.getElementById('bar-new').style.width = newPct+'%';
+  document.getElementById('bar-existing').style.width = exPct+'%';
+  document.getElementById('leg-new').textContent = 'New ('+newCount+')';
+  document.getElementById('leg-existing').textContent = 'Existing ('+existingCount+')';
+
+  // Leaderboard
+  renderLeaderboard(staffMap, total);
+
+  // Packages
+  renderPackages(pkgMap);
+
+  // Recent
+  renderRecent(rows);
+
+  // Payment
+  renderPayments(paymentMap);
+
+  // Bonus summary
+  renderBonusSummary(staffMap);
+}
+
+function renderLeaderboard(staffMap, teamTotal) {
+  const sorted = Object.entries(staffMap).sort((a,b)=>b[1].count-a[1].count);
+  if(sorted.length===0){document.getElementById('leaderboard-body').innerHTML='<div class="empty">No sales yet</div>';return;}
+  const max = sorted[0][1].count||1;
+
+  const html = sorted.map(([name,data],i)=>{
+    const bonus = calcBonus(data.count);
+    const earned = totalBonus(data.count);
+    const rankClass = i===0?'rank-1':i===1?'rank-2':i===2?'rank-3':'rank-other';
+    const tierBadge = data.count>=10?'tier-3-badge':data.count>=5?'tier-2-badge':'tier-1-badge';
+    const barW = Math.round((data.count/max)*100);
+    return `<div class="lb-row">
+      <div class="lb-rank ${rankClass}">${i+1}</div>
+      <div class="lb-avatar" style="background:${color(name)}">${initials(name)}</div>
+      <div class="lb-info">
+        <div class="lb-name">${name}</div>
+        <div class="lb-detail">${data.count} sale${data.count!==1?'s':''} · ${fmt(data.revenue)}</div>
+        <div class="lb-bar-wrap"><div class="lb-bar" style="width:${barW}%"></div></div>
+      </div>
+      <div class="lb-right">
+        <div class="lb-sales">${data.count}</div>
+        <div class="lb-bonus">${fmt(earned)} bonus</div>
+        <div class="lb-tier ${tierBadge}">${bonus.tier}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('leaderboard-body').innerHTML = html;
+}
+
+function renderPackages(pkgMap) {
+  const sorted = Object.entries(pkgMap).sort((a,b)=>b[1].count-a[1].count);
+  if(sorted.length===0){document.getElementById('pkg-body').innerHTML='<div class="empty">No sales yet</div>';return;}
+  const max = sorted[0][1].count||1;
+  const html = sorted.map(([name,data])=>{
+    const barW = Math.round((data.count/max)*100);
+    return `<div class="pkg-row">
+      <div class="pkg-name" title="${name}">${name}</div>
+      <div class="pkg-bar-wrap"><div class="pkg-bar" style="width:${barW}%"></div></div>
+      <div class="pkg-count">${data.count}</div>
+      <div class="pkg-revenue">${fmt(data.revenue)}</div>
+    </div>`;
+  }).join('');
+  document.getElementById('pkg-body').innerHTML = html;
+}
+
+function renderRecent(rows) {
+  const recent = [...rows].reverse().slice(0,8);
+  if(recent.length===0){document.getElementById('recent-body').innerHTML='<div class="empty">No sales yet</div>';return;}
+  const html = recent.map(row=>{
+    const staff   = (row[COL.staff]||'Unknown').replace(/"/g,'').trim();
+    const pkg     = (row[COL.package]||'—').replace(/"/g,'').trim();
+    const amount  = parseFloat((row[COL.amount]||'0').replace(/[^0-9.]/g,''))||0;
+    const patient = (row[COL.patientType]||'').replace(/"/g,'').trim();
+    const date    = (row[COL.date]||row[COL.timestamp]||'').replace(/"/g,'').trim();
+    const isNew   = patient.toLowerCase().includes('new');
+    const shortPkg = pkg.length>32 ? pkg.slice(0,30)+'…' : pkg;
+    return `<div class="sale-row">
+      <div class="sale-avatar" style="background:${color(staff)}">${initials(staff)}</div>
+      <div class="sale-info">
+        <div class="sale-name">${staff}</div>
+        <div class="sale-pkg">${shortPkg}</div>
+        ${isNew?'<span class="sale-new-badge">New patient</span>':''}
+      </div>
+      <div class="sale-right">
+        <div class="sale-amt">${fmt(amount)}</div>
+        <div class="sale-date">${date}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('recent-body').innerHTML = html;
+}
+
+function renderPayments(paymentMap) {
+  const sorted = Object.entries(paymentMap).sort((a,b)=>b[1]-a[1]);
+  if(sorted.length===0){document.getElementById('payment-body').innerHTML='<div class="empty">No data yet</div>';return;}
+  const total = sorted.reduce((s,[,v])=>s+v,0)||1;
+  const html = sorted.map(([method,count])=>{
+    const pct = Math.round((count/total)*100);
+    return `<div class="split-row" style="margin-bottom:8px;">
+      <span class="split-label">${method}</span>
+      <span class="split-val">${count} <span style="color:var(--gold);font-size:12px;">(${pct}%)</span></span>
+    </div>`;
+  }).join('');
+  document.getElementById('payment-body').innerHTML = html;
+}
+
+function renderBonusSummary(staffMap) {
+  const entries = Object.entries(staffMap);
+  if(entries.length===0){document.getElementById('bonus-summary-body').innerHTML='<div class="empty">No data yet</div>';return;}
+  const totalBonusPayout = entries.reduce((s,[,d])=>s+totalBonus(d.count),0);
+  const topEarner = entries.sort((a,b)=>totalBonus(b[1].count)-totalBonus(a[1].count))[0];
+  const html = `
+    <div class="split-row"><span class="split-label">Total bonuses owed</span><span class="split-val" style="color:var(--gold);">${fmt(totalBonusPayout)}</span></div>
+    <div class="split-row"><span class="split-label">Top earner</span><span class="split-val">${topEarner?topEarner[0]:'—'}</span></div>
+    <div class="split-row"><span class="split-label">Top earner bonus</span><span class="split-val" style="color:var(--gold);">${topEarner?fmt(totalBonus(topEarner[1].count)):'—'}</span></div>
+    <div class="split-row"><span class="split-label">Staff with Tier 2+</span><span class="split-val">${entries.filter(([,d])=>d.count>=5).length}</span></div>
+    <div class="split-row"><span class="split-label">Staff with Tier 3</span><span class="split-val">${entries.filter(([,d])=>d.count>=10).length}</span></div>
+  `;
+  document.getElementById('bonus-summary-body').innerHTML = html;
+}
+
+// ── COUNTDOWN ─────────────────────────────────────────────────────────────
+function updateCountdown() {
+  const end = new Date('2026-05-12T23:59:59');
+  const now = new Date();
+  const diff = end - now;
+  if(diff<=0){
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id=>document.getElementById(id).textContent='00');
+    return;
+  }
+  document.getElementById('cd-d').textContent = pad(Math.floor(diff/86400000));
+  document.getElementById('cd-h').textContent = pad(Math.floor((diff%86400000)/3600000));
+  document.getElementById('cd-m').textContent = pad(Math.floor((diff%3600000)/60000));
+  document.getElementById('cd-s').textContent = pad(Math.floor((diff%60000)/1000));
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────
+loadData();
+setInterval(loadData, 30000);   // Auto-refresh every 30 seconds
+setInterval(updateCountdown, 1000);
+updateCountdown();
+</script>
+</body>
+</html>
